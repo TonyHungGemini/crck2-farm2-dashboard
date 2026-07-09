@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 CRCK2 Aphivath – Farm 2 Dashboard</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2d6a4f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CRCK2 Farm2">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512x512.png">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<meta name="description" content="Dashboard khai thác mủ cao su – Đội 2 CRCK2 Aphivath">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#f4f6f8;--surface:#fff;--border:#e2e8f0;--text:#1a202c;--muted:#718096;--sec:#4a5568;--green:#2f855a;--gl:#c6f6d5;--gm:#48bb78;--red:#c53030;--rl:#fed7d7;--orange:#c05621;--ol:#feebc8;--blue:#2b6cb0;--bl:#bee3f8;--purple:#553c9a;--pl:#e9d8fd;--A:#3b82f6;--B:#10b981;--C:#f59e0b;--D:#8b5cf6;--r:10px;--sh:0 1px 3px rgba(0,0,0,.08);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5;}
+#setup{background:linear-gradient(135deg,#1a365d,#2b6cb0);color:#fff;overflow:hidden;max-height:600px;transition:max-height .4s ease;}
+#setup.gone{max-height:0;}
+.si{padding:18px 26px;}
+.st{font-size:15px;font-weight:700;margin-bottom:10px;}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;}
+.step{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:11px;}
+.sn{font-size:22px;font-weight:900;opacity:.4;margin-bottom:3px;}
+.st2{font-size:11.5px;line-height:1.5;opacity:.88;}
+.phien-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px;}
+.phien-row{background:rgba(255,255,255,.08);border-radius:8px;padding:10px 12px;}
+.phien-label{font-size:11px;font-weight:700;margin-bottom:6px;letter-spacing:.5px;}
+.url-in{width:100%;padding:7px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;font-size:12px;outline:none;}
+.url-in::placeholder{color:rgba(255,255,255,.4);}
+.btn{padding:6px 14px;border-radius:7px;border:none;font-size:12px;font-weight:600;cursor:pointer;margin-top:6px;}
+.btn-connect{color:#fff;width:100%;}
+.btn-ghost{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);}
+.btn-all{background:#38a169;color:#fff;margin-top:10px;padding:8px 20px;}
+.hint{font-size:11px;opacity:.65;margin-top:8px;}
+.hdr{background:linear-gradient(135deg,#1a4731,#2d6a4f 50%,#40916c);color:#fff;padding:13px 22px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.hdr h1{font-size:16px;font-weight:700;}
+.hdr p{font-size:11px;opacity:.8;margin-top:1px;}
+.hdr-r{display:flex;gap:10px;align-items:center;}
+.status{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:7px;padding:4px 11px;font-size:11px;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dok{background:#68d391;box-shadow:0 0 0 3px rgba(104,211,145,.3);}
+.dwarn{background:#f6ad55;}.derr{background:#fc8181;}
+.dload{background:#63b3ed;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.bdg{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:7px;padding:4px 11px;text-align:center;}
+.bdg .v{font-size:16px;font-weight:700;}.bdg .l{font-size:10px;opacity:.8;}
+.btn-r{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:6px;padding:4px 11px;font-size:11.5px;font-weight:600;cursor:pointer;}
+.nav-tabs{display:flex;gap:4px;padding:10px 20px;background:#fff;border-bottom:1px solid var(--border);}
+.nav-tab{padding:8px 16px;border-radius:8px;border:none;background:#f7fafc;color:var(--sec);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.nav-tab:hover{background:#edf2f7;}
+.nav-tab.active{background:var(--green);color:#fff;}
+.nav-tab .badge{background:rgba(255,255,255,.3);padding:1px 6px;border-radius:10px;font-size:10px;margin-left:4px;}
+.content{display:none;}
+.content.active{display:block;}
+.settings-section{background:#fff;border-radius:var(--r);padding:20px;margin-bottom:16px;box-shadow:var(--sh);}
+.settings-section h3{font-size:14px;color:var(--green);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--gl);}
+.month-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin-top:12px;}
+.month-card{background:#f7fafc;border-radius:8px;padding:12px;border:2px solid transparent;cursor:pointer;transition:all .2s;}
+.month-card:hover{border-color:var(--blue);}
+.month-card.active{border-color:var(--green);background:var(--gl);}
+.month-card .m-name{font-weight:700;font-size:14px;}
+.month-card .m-status{font-size:11px;color:var(--muted);margin-top:4px;}
+.month-card .m-status.connected{color:var(--green);}
+.history-panel{padding:20px;max-width:1200px;margin:0 auto;}
+.history-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.history-selector{display:flex;gap:8px;flex-wrap:wrap;}
+.month-btn{padding:10px 20px;border-radius:8px;border:2px solid var(--border);background:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.month-btn:hover{border-color:var(--blue);}
+.month-btn.active{background:var(--green);color:#fff;border-color:var(--green);}
+.month-btn .data-src{font-size:10px;opacity:.7;margin-top:2px;}
+.kpi{background:var(--surface);border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh);border:1px solid var(--border);position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.g::before{background:#48bb78;}.kpi.b::before{background:#3182ce;}.kpi.o::before{background:#ed8936;}.kpi.r::before{background:#e53e3e;}.kpi.p::before{background:#805ad5;}
+.kl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
+.kv{font-size:21px;font-weight:800;margin:3px 0 2px;letter-spacing:-.5px;}
+.ks{font-size:11px;color:var(--muted);}
+.pbar{height:4px;border-radius:2px;background:#e2e8f0;overflow:hidden;margin-top:5px;}
+.pfill{height:100%;border-radius:2px;}
+.wrap{max-width:1400px;margin:0 auto;padding:14px 20px;}
+.sec{font-size:11px;font-weight:700;color:var(--sec);letter-spacing:.8px;text-transform:uppercase;margin:18px 0 9px;padding-left:9px;border-left:3px solid #3182ce;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.g2{display:grid;grid-template-columns:3fr 2fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.geq{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.card{background:var(--surface);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);border:1px solid var(--border);}
+.ct{font-size:12.5px;font-weight:700;margin-bottom:10px;}
+.ct span{font-weight:400;color:var(--muted);font-size:11px;margin-left:5px;}
+.cw{position:relative;height:200px;}
+canvas{display:block;}
+.pill{display:inline-block;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:700;}
+.pr{background:var(--rl);color:var(--red);}.po{background:var(--ol);color:var(--orange);}
+.py{background:#fefcbf;color:#744210;}.pg{background:var(--gl);color:var(--green);}
+.pb3{background:var(--bl);color:var(--blue);}.pp{background:var(--pl);color:var(--purple);}
+.ts{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead tr{background:#f7fafc;}
+th{padding:7px 10px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;border-bottom:2px solid var(--border);white-space:nowrap;}
+td{padding:7px 10px;border-bottom:1px solid var(--border);color:var(--sec);white-space:nowrap;}
+tbody tr:hover{background:#f7fafc;}
+tbody tr:last-child td{border-bottom:none;}
+.tr2{text-align:right;font-weight:600;color:var(--text);}.tc{text-align:center;}
+.tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;}
+.tab{padding:6px 12px;border-radius:6px;border:none;background:#f7fafc;color:var(--sec);font-size:11px;font-weight:600;cursor:pointer;}
+.tab:hover{background:#edf2f7;}
+.tab.active{background:var(--green);color:#fff;}
+.tp{display:none;}
+.tp.active{display:block;}
+.phien-stat{border-radius:var(--r);padding:12px 14px;box-shadow:var(--sh);border:1px solid var(--border);border-top:3px solid #ccc;}
+.ps-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.ps-badge{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;flex-shrink:0;}
+.ps-title{font-size:12px;font-weight:700;}
+.ps-sub{font-size:10px;color:var(--muted);}
+.ps-val{font-size:20px;font-weight:800;margin:3px 0;}
+.ps-detail{font-size:11px;color:var(--muted);}
+.ps-disconnected{opacity:.45;filter:grayscale(.8);}
+.ag{display:grid;gap:10px;}
+.alert{display:flex;gap:12px;padding:14px 16px;border-radius:var(--r);border-left:4px solid #ccc;background:#fff;box-shadow:var(--sh);}
+.alert.alr{border-color:var(--red);background:#fff5f5;}
+.alert.alo{border-color:var(--orange);background:#fffaf0;}
+.alert.alb{border-color:var(--blue);background:#ebf8ff;}
+.alert.alg{border-color:var(--green);background:#f0fff4;}
+.ai{font-size:20px;flex-shrink:0;}
+.at{font-weight:700;font-size:13px;margin-bottom:4px;}
+.ad{font-size:12px;opacity:.85;line-height:1.5;}
+.ftr{text-align:center;padding:20px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:30px;}
+.phien-badges{display:flex;gap:5px;}
+.pb2{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:700;opacity:.5;}
+.pb2.connected{opacity:1;}
+.pa{background:rgba(59,130,246,.3);color:#bfdbfe;}
+.pbB{background:rgba(16,185,129,.3);color:#a7f3d0;}
+.pc2{background:rgba(245,158,11,.3);color:#fde68a;}
+.pd3{background:rgba(139,92,246,.3);color:#ddd6fe;}
+.live-banner{background:linear-gradient(90deg,var(--green),#38a169);color:#fff;padding:8px 20px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:600;}
+.live-banner button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:11px;}
+#settings-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;}
+#settings-modal.show{display:flex;}
+#settings-modal>div{background:#fff;border-radius:12px;width:95%;max-width:700px;max-height:90vh;overflow:auto;padding:24px}
+@media(max-width:768px){.g5,.g4{grid-template-columns:repeat(2,1fr);}.g2,.g3,.geq{grid-template-columns:1fr;}.phien-grid{grid-template-columns:1fr 1fr;}.hdr{flex-wrap:wrap;gap:10px;}.hdr-r{flex-wrap:wrap;}}
+</style>
+</head>
+<body>
+<div id="setup" class="si">
+  <div class="st">🔗 Kết Nối Google Sheet – 4 Phiên A / B / C / D</div>
+  <div style="font-size:12px;opacity:.8;margin-bottom:10px"><strong>📌 Live (Tháng hiện tại):</strong> URL cho dữ liệu tháng này</div>
+  <div class="steps">
+    <div class="step"><div class="sn">1</div><div class="st2">Google Sheet → File → Share → "Publish to web"</div></div>
+    <div class="step"><div class="sn">2</div><div class="st2">Chọn sheet tab → Format: CSV → Publish</div></div>
+    <div class="step"><div class="sn">3</div><div class="st2">Copy URL được cấp</div></div>
+    <div class="step"><div class="sn">4</div><div class="st2">Dán URL → Kết Nối</div></div>
+  </div>
+  <div class="phien-grid">
+    <div class="phien-row" style="border-left:3px solid var(--A)"><div class="phien-label" style="color:var(--A)">PHIÊN A</div><input class="url-in" id="ua" placeholder="https://...pub?output=csv"/><button class="btn btn-connect" style="background:var(--A)" onclick="connectOne('a')">Kết Nối A</button></div>
+    <div class="phien-row" style="border-left:3px solid var(--B)"><div class="phien-label" style="color:var(--B)">PHIÊN B</div><input class="url-in" id="ub" placeholder="https://...pub?output=csv"/><button class="btn btn-connect" style="background:var(--B)" onclick="connectOne('b')">Kết Nối B</button></div>
+    <div class="phien-row" style="border-left:3px solid var(--C)"><div class="phien-label" style="color:var(--C)">PHIÊN C</div><input class="url-in" id="uc" placeholder="https://...pub?output=csv"/><button class="btn btn-connect" style="background:var(--C)" onclick="connectOne('c')">Kết Nối C</button></div>
+    <div class="phien-row" style="border-left:3px solid var(--D)"><div class="phien-label" style="color:var(--D)">PHIÊN D</div><input class="url-in" id="ud" placeholder="https://...pub?output=csv"/><button class="btn btn-connect" style="background:var(--D)" onclick="connectOne('d')">Kết Nối D</button></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap"><button class="btn btn-all" onclick="connectAll()">🔄 Kết Nối Tất Cả 4 Phiên</button><span class="hint">Hoặc dùng <strong>Lịch Sử</strong> để xem dữ liệu tháng trước</span></div>
+</div>
+<div class="hdr">
+  <div style="display:flex;align-items:center;gap:12px">
+    <img src="icons/icon-72x72.png" alt="CRCK2" style="width:40px;height:40px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.3)">
+    <div><h1>CRCK2 Aphivath – Đội 2 | Dashboard Khai Thác Mủ</h1><p id="hsub">Dữ liệu Live · 4 Phiên A/B/C/D</p></div>
+  </div>
+  <div class="hdr-r">
+    <div class="phien-badges"><span class="pb2 pa" id="badge-a">A</span><span class="pb2 pbB" id="badge-b">B</span><span class="pb2 pc2" id="badge-c">C</span><span class="pb2 pd3" id="badge-d">D</span></div>
+    <div class="status"><div class="dot dwarn" id="dot"></div><span id="stxt">Chưa kết nối</span></div>
+    <button class="btn-r" onclick="refreshAll()">↺ Cập nhật</button>
+    <div class="bdg"><div class="v" id="hsl">—</div><div class="l">kg Tổng SL</div></div>
+    <div class="bdg"><div class="v" id="hnsbq">—</div><div class="l">NSBQ TB</div></div>
+  </div>
+</div>
+<div class="live-banner"><span>📡 <strong>Chế độ LIVE</strong> — Đang kết nối Google Sheet tháng hiện tại</span><button onclick="showSettings()">⚙️ Cài đặt</button></div>
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="switchView('live',this)">📊 Dashboard <span class="badge" id="live-badge">LIVE</span></button>
+  <button class="nav-tab" onclick="switchView('history',this)">📅 Lịch Sử <span class="badge" id="hist-badge">0</span></button>
+  <button class="nav-tab" onclick="showSettings()">⚙️ Cài đặt</button>
+</div>
+<div class="content active" id="content-live">
+  <div class="wrap">
+    <div class="sec">Tổng Quan – Toàn Tháng</div>
+    <div class="g5">
+      <div class="kpi g"><div class="kl">Tổng Sản Lượng</div><div class="kv" id="k-sl">— <small style="font-size:12px">kg</small></div><div class="ks" id="k-sl-s">—</div><div class="pbar"><div class="pfill" id="k-sl-b" style="width:0%"></div></div><div style="font-size:10px;color:var(--muted)" id="k-pct">KH 3,790,000 kg</div></div>
+      <div class="kpi b"><div class="kl">NSBQ Bình Quân</div><div class="kv" id="k-nsbq">— <small style="font-size:12px">kg/nhát</small></div><div class="ks" id="k-nsbq-s">—</div><div class="pbar"><div class="pfill" id="k-nsbq-b" style="width:0%"></div></div><div style="font-size:10px;color:var(--muted)">Mục tiêu ≥ 125</div></div>
+      <div class="kpi o"><div class="kl">Tổng Nhát Cạo</div><div class="kv" id="k-nhat">— <small style="font-size:12px">nhát</small></div><div class="ks" id="k-nhat-s">—</div></div>
+      <div class="kpi r"><div class="kl">Công Nhân Mới</div><div class="kv">~50%</div><div class="ks">≈161/322 người</div><div style="margin-top:5px"><span class="pill pr">⚠ Lỗi KT cao</span></div></div>
+      <div class="kpi p"><div class="kl">Phiên Kết Nối</div><div class="kv" id="k-conn">0/4</div><div class="ks" id="k-conn-s">Kết nối Sheet</div></div>
+    </div>
+    <div class="sec">Kết Quả Từng Phiên</div>
+    <div class="g4" id="phien-stats"></div>
+    <div class="sec">Biểu Đồ So Sánh</div>
+    <div class="g2">
+      <div class="card"><div class="ct">NSBQ Theo KV <span>kg/nhát</span></div><div class="cw"><canvas id="cNSBQ"></canvas></div></div>
+      <div class="card"><div class="ct">Sản Lượng Theo KV <span>kg</span></div><div class="cw"><canvas id="cSL"></canvas></div></div>
+    </div>
+    <div class="g3" style="margin-top:12px">
+      <div class="card"><div class="ct">Phân Bố NSBQ</div><div class="cw"><canvas id="cDist"></canvas></div></div>
+      <div class="card"><div class="ct">Xu Hướng NSBQ Theo KV</div><div class="cw"><canvas id="cLine"></canvas></div></div>
+      <div class="card"><div class="ct">Khoảng Cách Tay Nghề</div><div class="cw"><canvas id="cGap"></canvas></div></div>
+    </div>
+    <div class="sec">Chi Tiết Từng Khu Vực</div>
+    <div class="card">
+      <div class="tabs" id="kv-tabs"><button class="tab active" onclick="showTab('all',this)">Tất Cả</button><button class="tab" onclick="showTab('a',this)">A</button><button class="tab" onclick="showTab('b',this)">B</button><button class="tab" onclick="showTab('c',this)">C</button><button class="tab" onclick="showTab('d',this)">D</button></div>
+      <div class="tp active" id="tab-all"><div class="ts"><table><thead><tr><th>KV</th><th class="tr2">SL (kg)</th><th class="tr2">Nhát</th><th class="tr2">NSBQ TB</th><th class="tc">Xếp Loại</th></tr></thead><tbody id="tb-all"></tbody></table></div></div>
+      <div class="tp" id="tab-a"><div class="ts"><table><thead><tr><th>KV</th><th class="tr2">SL</th><th class="tr2">Nhát</th><th class="tr2">NSBQ</th><th class="tc">Loại</th><th class="tr2">vs TB</th></tr></thead><tbody id="tb-a"></tbody></table></div></div>
+      <div class="tp" id="tab-b"><div class="ts"><table><thead><tr><th>KV</th><th class="tr2">SL</th><th class="tr2">Nhát</th><th class="tr2">NSBQ</th><th class="tc">Loại</th><th class="tr2">vs TB</th></tr></thead><tbody id="tb-b"></tbody></table></div></div>
+      <div class="tp" id="tab-c"><div class="ts"><table><thead><tr><th>KV</th><th class="tr2">SL</th><th class="tr2">Nhát</th><th class="tr2">NSBQ</th><th class="tc">Loại</th><th class="tr2">vs TB</th></tr></thead><tbody id="tb-c"></tbody></table></div></div>
+      <div class="tp" id="tab-d"><div class="ts"><table><thead><tr><th>KV</th><th class="tr2">SL</th><th class="tr2">Nhát</th><th class="tr2">NSBQ</th><th class="tc">Loại</th><th class="tr2">vs TB</th></tr></thead><tbody id="tb-d"></tbody></table></div></div>
+    </div>
+    <div class="sec">Công Nhân Nổi Bật</div>
+    <div class="geq">
+      <div class="card"><div class="ct">🏆 Top 10 – NSBQ Cao</div><div class="ts"><table><thead><tr><th>#</th><th>Mã CN</th><th>KV</th><th class="tc">Phiên</th><th class="tr2">SL</th><th class="tr2">NSBQ</th></tr></thead><tbody id="tb-top"></tbody></table></div></div>
+      <div class="card"><div class="ct">📉 Bottom 10 – NSBQ Thấp</div><div class="ts"><table><thead><tr><th>#</th><th>Mã CN</th><th>KV</th><th class="tc">Phiên</th><th class="tr2">SL</th><th class="tr2">NSBQ</th></tr></thead><tbody id="tb-bot"></tbody></table></div></div>
+    </div>
+    <div class="sec">Cảnh Báo & Khuyến Nghị</div>
+    <div class="ag">
+      <div class="alert alr"><div class="ai">🚨</div><div><div class="at">[P1] Brown Bast – KV1–4</div><div class="ad">Kiểm tra vết đen/nâu trên miệng cạo. Dừng cạo cây bệnh, cho nghỉ 4–8 tuần.</div></div></div>
+      <div class="alert alo"><div class="ai">👷</div><div><div class="at">[P2] 50% CN Mới = Lỗi Kỹ Thuật</div><div class="ad">Cạo phạm gỗ · Mủ đông miệng · Máng lệch. Ghép đôi CN giỏi–mới.</div></div></div>
+      <div class="alert alr"><div class="ai">⚗️</div><div><div class="at">[P3] KT Quá Dày – KV7/8</div><div class="ad">1 lần/tháng tối đa cho cây 6–8 tuổi.</div></div></div>
+      <div class="alert alr"><div class="ai">⏰</div><div><div class="at">[P4] Bốc Mủ 6–8 Tiếng Sau Cạo</div><div class="ad">Cạo 3–4h sáng → bốc trước 11h.</div></div></div>
+      <div class="alert alg"><div class="ai">🏅</div><div><div class="at">KV4 – Mô Hình Chuẩn</div><div class="ad">Dẫn đầu ổn định. RRIM 600 + cây 10 tuổi.</div></div></div>
+      <div class="alert alb"><div class="ai">🌱</div><div><div class="at">KV8 – Thấp Do Cây Non</div><div class="ad">Cây 6–8 tuổi + RRIV 115. Không áp KPI ngang KV1–6.</div></div></div>
+    </div>
+    <div class="ftr" id="ftxt">CRCK2 Aphivath – Đội 2 · Dashboard</div>
+  </div>
+</div>
+<div class="content" id="content-history">
+  <div class="history-panel">
+    <div class="history-header"><h2 style="font-size:16px;color:var(--green)">📅 Xem Dữ Liệu Lịch Sử</h2><button class="btn btn-ghost" onclick="showSettings()" style="padding:10px 16px">➕ Thêm tháng mới</button></div>
+    <div class="history-selector" id="history-selector"></div>
+    <div id="history-content" style="margin-top:20px">
+      <div style="text-align:center;padding:60px;color:var(--muted)"><div style="font-size:48px;margin-bottom:16px">📅</div><div style="font-size:16px;font-weight:600;margin-bottom:8px">Chưa có dữ liệu lịch sử</div><div style="font-size:13px">Vào <strong>Cài đặt</strong> để thêm URL Google Sheet cho các tháng trước</div></div>
+    </div>
+  </div>
+</div>
+<div id="settings-modal">
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:2px solid var(--border);padding-bottom:12px"><h2 style="font-size:18px;color:var(--green)">⚙️ Cài Đặt Dashboard</h2><button onclick="hideSettings()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--muted)">✕</button></div>
+    <div class="settings-section"><h3>📡 Dữ Liệu LIVE (Tháng Hiện Tại)</h3><p style="font-size:12px;color:var(--muted);margin-bottom:12px">URL Google Sheet cho 4 phiên. Tự cập nhật mỗi 5 phút.</p><div id="live-urls"></div></div>
+    <div class="settings-section"><h3>📅 Dữ Liệu Lịch Sử</h3><p style="font-size:12px;color:var(--muted);margin-bottom:12px">Thêm URL cho các tháng trước để xem lại dữ liệu.</p><div id="history-months-list"></div><div style="margin-top:16px;padding:16px;background:#f7fafc;border-radius:8px"><div style="font-weight:600;margin-bottom:8px">➕ Thêm tháng mới</div><div style="display:grid;grid-template-columns:120px 1fr auto;gap:8px;align-items:center"><input type="text" id="new-month-name" placeholder="VD: T6/2026" style="padding:8px;border:1px solid var(--border);border-radius:6px;font-size:13px"><input type="text" id="new-month-url" placeholder="URL CSV (Phiên A)" style="padding:8px;border:1px solid var(--border);border-radius:6px;font-size:13px"><button onclick="addHistoryMonth()" class="btn" style="background:var(--green);color:#fff;padding:8px 16px">Thêm</button></div></div></div>
+    <div class="settings-section"><h3>🎯 Kế Hoạch Sản Lượng Năm</h3><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label style="font-size:12px;color:var(--muted)">KH Mủ đông (kg)</label><input type="number" id="kh-mudong" value="3725000" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px" onchange="saveSettings()"></div><div><label style="font-size:12px;color:var(--muted)">KH Mủ dây (kg)</label><input type="number" id="kh-muday" value="65000" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:14px" onchange="saveSettings()"></div></div></div>
+    <div style="margin-top:16px;display:flex;gap:10px;justify-content:flex-end"><button onclick="hideSettings()" class="btn btn-ghost">Đóng</button><button onclick="saveAndConnect()" class="btn" style="background:var(--green);color:#fff;padding:10px 24px">💾 Lưu & Kết Nối</button></div>
+  </div>
+</div>

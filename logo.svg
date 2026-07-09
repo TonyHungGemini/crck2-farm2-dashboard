@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a4731"/>
+      <stop offset="100%" style="stop-color:#2d6a4f"/>
+    </linearGradient>
+    <linearGradient id="leaf1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#52b788"/>
+      <stop offset="100%" style="stop-color:#2d6a4f"/>
+    </linearGradient>
+    <linearGradient id="leaf2" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#74c69d"/>
+      <stop offset="100%" style="stop-color:#40916c"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="256" fill="url(#bg)"/>
+  <!-- Trunk -->
+  <path d="M240 420 Q248 380 252 340 Q250 300 248 260 L264 260 Q262 300 260 340 Q264 380 272 420 Z" fill="#a0522d"/>
+  <path d="M248 360 Q256 350 264 360 Q272 370 256 380 Q240 370 248 360Z" fill="#8b4513"/>
+  <!-- Main trunk wider base -->
+  <path d="M236 420 Q244 395 250 370 L262 370 Q268 395 276 420Z" fill="#8b4513"/>
+  <!-- Left big leaf -->
+  <path d="M256 280 Q210 230 170 200 Q160 190 175 195 Q200 205 230 225 Q210 190 195 160 Q190 148 205 158 Q230 178 248 218 Q245 200 240 175 Q238 162 252 170 Q258 200 258 240 Z" fill="url(#leaf1)" opacity="0.95"/>
+  <!-- Right big leaf -->
+  <path d="M256 280 Q302 230 342 200 Q352 190 337 195 Q312 205 282 225 Q302 190 317 160 Q322 148 307 158 Q282 178 264 218 Q267 200 272 175 Q274 162 260 170 Q254 200 254 240 Z" fill="url(#leaf2)" opacity="0.95"/>
+  <!-- Top leaf -->
+  <path d="M256 260 Q240 220 238 180 Q237 165 248 172 Q256 185 256 210 Q256 185 264 172 Q275 165 274 180 Q272 220 256 260 Z" fill="#95d5b2" opacity="0.9"/>
+  <!-- Leaf veins left -->
+  <path d="M250 270 Q225 240 200 215" stroke="#1b4332" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M248 255 Q228 230 215 205" stroke="#1b4332" stroke-width="1" fill="none" opacity="0.4"/>
+  <!-- Leaf veins right -->
+  <path d="M262 270 Q287 240 312 215" stroke="#1b4332" stroke-width="1.5" fill="none" opacity="0.5"/>
+  <path d="M264 255 Q284 230 297 205" stroke="#1b4332" stroke-width="1" fill="none" opacity="0.4"/>
+  <!-- Small highlight -->
+  <circle cx="220" cy="215" r="4" fill="#b7e4c7" opacity="0.6"/>
+  <circle cx="292" cy="215" r="4" fill="#b7e4c7" opacity="0.6"/>
+  <!-- Text CRCK2 -->
+  <text x="256" y="468" font-family="Arial,sans-serif" font-size="42" font-weight="900" text-anchor="middle" fill="white" letter-spacing="2">CRCK2</text>
+  <text x="256" y="492" font-family="Arial,sans-serif" font-size="18" font-weight="400" text-anchor="middle" fill="#95d5b2" letter-spacing="3">FARM 2</text>
+</svg>
